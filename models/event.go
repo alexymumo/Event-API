@@ -3,7 +3,7 @@ package models
 import "time"
 
 type Event struct {
-	EventID     uint32    `json:"eventid"`
+	EventID     int       `json:"event_id"`
 	Title       string    `json:"title"`
 	Description string    `json:"description"`
 	Location    string    `json:"location"`
