@@ -7,7 +7,9 @@ import (
 //var db *sql.DB
 
 func RegisterUser(user *models.User) (*models.User, error) {
-	stmt, err := db.Prepare("INSERT INTO users(name, email,password) VALUES(?,?,?)")
+
+	return user, nil
+	/*stmt, err := db.Prepare("INSERT INTO users(name, email,password) VALUES(?,?,?)")
 	if err != nil {
 		return nil, err
 	}
@@ -22,10 +24,13 @@ func RegisterUser(user *models.User) (*models.User, error) {
 	}
 	user.ID = int(userid)
 	return user, nil
+	*/
 }
 
 func DeleteUser(id int) (int64, error) {
-	user, err := db.Exec("DELETE FROM users WHERE id=?", id)
+	return 0, nil
+
+	/*user, err := db.Exec("DELETE FROM users WHERE id=?", id)
 	if err != nil {
 		return 0, err
 	}
@@ -35,5 +40,13 @@ func DeleteUser(id int) (int64, error) {
 	}
 
 	return result, err
+	*/
+}
+
+func UpdateUser() {
+
+}
+
+func GetAllUsers() {
 
 }
