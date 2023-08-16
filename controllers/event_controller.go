@@ -40,11 +40,13 @@ type Error struct {
 func (*controller) CreateEvent(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	var event models.Event
+
 	err := json.NewDecoder(r.Body).Decode(&event)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(util.ServiceError{Message: "Wrong data format"})
 	}
+
 	valErr := eventservice.Validate(&event)
 	if valErr != nil {
 		w.WriteHeader(http.StatusBadRequest)

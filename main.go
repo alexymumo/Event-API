@@ -1,42 +1,45 @@
 package main
 
 import (
-	"events/controllers"
-	"events/models"
-	"events/repository"
-	"events/service"
-	"fmt"
-	"net/http"
+	"events/routes"
 
-	"github.com/gorilla/mux"
-
-	"github.com/jinzhu/gorm"
-
-	_ "github.com/jinzhu/gorm/dialects/mysql"
+	_ "github.com/go-sql-driver/mysql"
 )
 
-var (
-	repo          repository.EventRepository  = repository.EventRepsotoryImpl()
-	eventservices service.EventService        = service.EventServiceImpl(repo)
-	controller    controllers.EventController = controllers.EventControllerImpl(eventservices)
-)
+/*
+type Event struct {
+	EventID     int    `json:"id"`
+	Title       string `json:"title"`
+	Description string `json:"description"`
+	Location    string `json:"location"`
+}
+
+var db *sql.DB
+var err error
+
+func createEvent(w http.ResponseWriter, r *http.Request) {
+	stmt, err := db.Prepare("INSERT INTO event(title, description, location) VALUES(?,?,?)")
+	if err != nil {
+		panic(err.Error())
+	}
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		panic(err.Error())
+	}
+	keyVal := make(map[string]string)
+	title := keyVal["title"]
+	description := keyVal["description"]
+	location := keyVal["location"]
+	json.Unmarshal(body, &keyVal)
+	_, err = stmt.Exec(title, description, location)
+	if err != nil {
+		panic(err.Error())
+	}
+	fmt.Fprintf(w, "post created")
+
+}
+*/
 
 func main() {
-
-	router := mux.NewRouter()
-	router.HandleFunc("/event", controller.CreateEvent).Methods("POST")
-
-	test := "root:@tcp(127.0.0.1:3306)/events?charset=utf8&parseTime=True&loc=Local"
-	//dsn := fmt.Sprintf("%s:%s@tcp(%s:3306)/%s?charset=utf8&parseTime=True&loc=Local", os.Getenv("DB_USER"), os.Getenv("DB_PASS"), os.Getenv("DB_HOST"), os.Getenv("DB_NAME"))
-
-	db, err := gorm.Open("mysql", test)
-
-	if err != nil {
-		fmt.Printf("Cannot connect to database")
-	} else {
-		fmt.Printf("Connected successfully to database")
-	}
-	db.AutoMigrate(&models.Event{}, &models.User{})
-
-	http.ListenAndServe(":8000", nil)
+	routes.Routes()
 }

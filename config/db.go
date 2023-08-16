@@ -1,26 +1,40 @@
 package config
 
-/*
+import (
+	"database/sql"
+	"fmt"
+	"os"
 
-var (
-	db *gorm.DB
+	_ "github.com/go-sql-driver/mysql"
+	"github.com/joho/godotenv"
 )
+
+var db *sql.DB
+var err error
 
 func Connect() {
 	err := godotenv.Load()
 	if err != nil {
-		fmt.Println("Failed to load env")
-	} else {
-		fmt.Println("Successfully loaded environment variables")
+		fmt.Println("Failed to load env values")
 	}
-	dburl := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local", os.Getenv("DB_USER"), os.Getenv("DB_PASS"), os.Getenv("DB_HOST"), os.Getenv("DB_PORT"), os.Getenv("DB_NAME"))
-	DB, err := gorm.Open("mysql", dburl)
+	var (
+		dbuser     = os.Getenv("DB_USER")
+		dbpassword = os.Getenv("DB_PASS")
+		dbhost     = os.Getenv("DB_HOST")
+		dbport     = os.Getenv("DB_PORT")
+		dbname     = os.Getenv("DB_NAME")
+	)
+
+	dburl := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local", dbuser, dbpassword, dbhost, dbport, dbname)
+	d, err := sql.Open("mysql", dburl)
 	if err != nil {
-		fmt.Printf("Failed to connect to database\n", "mysql")
+		fmt.Println("Failed to connect")
 	} else {
 		fmt.Println("Connected successfully")
 	}
-
+	db = d
 }
 
-*/
+func GetDb() *sql.DB {
+	return db
+}

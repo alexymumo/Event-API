@@ -1,12 +1,19 @@
 package repository
 
 import (
+	"database/sql"
+	"events/config"
 	"events/models"
 
-	"github.com/jinzhu/gorm"
+	_ "github.com/go-sql-driver/mysql"
 )
 
-var db *gorm.DB
+var db *sql.DB
+
+func init() {
+	config.Connect()
+	db = config.GetDb()
+}
 
 type EventRepository interface {
 	Save(event *models.Event) (*models.Event, error)
@@ -22,27 +29,21 @@ func EventRepsotoryImpl() EventRepository {
 }
 
 func (*repository) Delete(eventId int64) (int64, error) {
-	return 0, nil
-	/*
-		event, err := db.Exec(`DELETE FROM events WHERE eventId=?`, eventId)
-		if err != nil {
-			panic(err)
-		}
-		res, err := event.RowsAffected()
-		if err != nil {
-			return 0, err
-		}
-		return res, err
-	*/
+	event, err := db.Exec(`DELETE FROM events WHERE eventId=?`, eventId)
+	if err != nil {
+		panic(err)
+	}
+	res, err := event.RowsAffected()
+	if err != nil {
+		return 0, err
+	}
+	return res, err
 }
 
 /*return slice of events*/
 
 func (*repository) FindAllEvents() ([]models.Event, error) {
-	var events []models.Event
-	return events, nil
-
-	/*query, err := db.Query(`SELECT * FROM events`)
+	query, err := db.Query(`SELECT * FROM event`)
 	if err != nil {
 		return nil, err
 	}
@@ -61,12 +62,11 @@ func (*repository) FindAllEvents() ([]models.Event, error) {
 		events = append(events, event)
 	}
 	return events, nil
-	*/
+
 }
 
 func (*repository) Update(event *models.Event, id int64) (*models.Event, error) {
-	return event, nil
-	/*stmt, err := db.Prepare(`UPDATE events SET title=?,description=?, location=? WHERE id=?;`)
+	stmt, err := db.Prepare(`UPDATE events SET title=?,description=?, location=? WHERE id=?;`)
 	if err != nil {
 		return nil, err
 	}
@@ -77,13 +77,24 @@ func (*repository) Update(event *models.Event, id int64) (*models.Event, error) 
 	}
 	event.EventID = int(id)
 	return event, err
-	*/
+
 }
 
 func (*repository) Save(event *models.Event) (*models.Event, error) {
-	err := db.Debug().Model(&models.Event{}).Create(&event).Error
-	if err != err {
-		return &models.Event{}, err
+	stmt, err := db.Prepare("INSERT INTO event(title, description, location) VALUES(?,?,?)")
+	if err != nil {
+		return nil, err
 	}
+	defer stmt.Close()
+	res, err := db.Exec(event.Title, event.Description, event.Location)
+	if err != nil {
+		return nil, err
+	}
+	id, err := res.LastInsertId()
+	if err != nil {
+		return nil, err
+	}
+	event.EventID = int(id)
+
 	return event, nil
 }
