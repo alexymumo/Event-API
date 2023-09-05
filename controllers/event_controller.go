@@ -3,8 +3,8 @@ package controllers
 import (
 	"encoding/json"
 	"events/models"
+	"events/responses"
 	"events/service"
-	"events/util"
 	"fmt"
 	"net/http"
 )
@@ -40,25 +40,26 @@ type Error struct {
 func (*controller) CreateEvent(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	var event models.Event
-
+	//var event *models.Event
 	err := json.NewDecoder(r.Body).Decode(&event)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(util.ServiceError{Message: "Wrong data format"})
+		responses.ERROR(w, http.StatusUnprocessableEntity, err)
+		return
 	}
+	eventservice.Validate(&event)
+	result, err := eventservice.Save(&event)
+	if err != nil {
+		panic(err.Error())
+	}
+	json, err := json.Marshal(result)
+	if err != nil {
+		panic(err.Error())
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(201)
+	fmt.Fprintf(w, "%s", json)
+	//responses.JSON(w, http.StatusCreated, result)
 
-	valErr := eventservice.Validate(&event)
-	if valErr != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(util.ServiceError{Message: valErr.Error()})
-	}
-	result, err1 := eventservice.Save(&event)
-	if err1 != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(util.ServiceError{Message: "Error encountered while saving..."})
-	}
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(result)
 }
 
 func (*controller) GetAllEvents(w http.ResponseWriter, r *http.Request) {

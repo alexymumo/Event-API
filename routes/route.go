@@ -24,7 +24,8 @@ var Routes = func() {
 	}
 	router := mux.NewRouter()
 	router.HandleFunc("/test", controller.Test)
-	router.HandleFunc("/event", controller.CreateEvent)
-	router.HandleFunc("/events", controller.GetAllEvents)
+	router.HandleFunc("/event", controller.CreateEvent).Methods("POST")
+	router.HandleFunc("/events", controller.GetAllEvents).Methods("GET")
+	router.HandleFunc("/event/{eventid}", controllers.DeleteUserById).Methods("DELETE")
 	http.ListenAndServe(":8080", router)
 }
