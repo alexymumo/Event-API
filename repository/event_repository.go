@@ -81,12 +81,12 @@ func (*repository) Update(event *models.Event, id int64) (*models.Event, error) 
 }
 
 func (*repository) Save(event *models.Event) (*models.Event, error) {
-	stmt, err := db.Prepare("INSERT INTO event(title, description, location) VALUES(?,?,?)")
+	stmt, err := db.Prepare("INSERT INTO event (title, description, location) VALUES(?,?,?)")
 	if err != nil {
 		return nil, err
 	}
 	defer stmt.Close()
-	res, err := db.Exec(event.Title, event.Description, event.Location)
+	res, err := db.Exec(event.Title, event.Description, event.Location, event.EventID)
 	if err != nil {
 		return nil, err
 	}

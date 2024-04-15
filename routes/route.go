@@ -23,7 +23,9 @@ var Routes = func() {
 		fmt.Println("failed to load env variables")
 	}
 	router := mux.NewRouter()
-	router.HandleFunc("/test", controller.Test)
+	router.HandleFunc("/register", controllers.CreateUser).Methods("POST")
+	router.HandleFunc("/login", controllers.CreateUser).Methods("POST")
+	router.HandleFunc("/test", controller.Test).Methods("GET")
 	router.HandleFunc("/event", controller.CreateEvent).Methods("POST")
 	router.HandleFunc("/events", controller.GetAllEvents).Methods("GET")
 	router.HandleFunc("/event/{eventid}", controllers.DeleteUserById).Methods("DELETE")

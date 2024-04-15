@@ -30,7 +30,7 @@ func EventControllerImpl(service service.EventService) EventController {
 
 func (*controller) Test(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	fmt.Println("End Points Working")
+	fmt.Printf("Endpoint working")
 }
 
 type Error struct {
@@ -38,9 +38,8 @@ type Error struct {
 }
 
 func (*controller) CreateEvent(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
+	//w.Header().Set("Content-Type", "application/json")
 	var event models.Event
-	//var event *models.Event
 	err := json.NewDecoder(r.Body).Decode(&event)
 	if err != nil {
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
@@ -55,10 +54,10 @@ func (*controller) CreateEvent(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		panic(err.Error())
 	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(201)
+	//w.Header().Set("Content-Type", "application/json")
+	//w.WriteHeader(201)
 	fmt.Fprintf(w, "%s", json)
-	//responses.JSON(w, http.StatusCreated, result)
+	responses.JSON(w, http.StatusCreated, result)
 
 }
 

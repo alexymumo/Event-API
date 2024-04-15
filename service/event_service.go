@@ -40,10 +40,12 @@ func (*service) Validate(event *models.Event) error {
 		err := errors.New("cannot be empty")
 		return err
 	}
+
 	if event.Location == "" {
 		err := errors.New("cannot be empty")
 		return err
 	}
+
 	return nil
 }
 

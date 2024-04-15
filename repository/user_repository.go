@@ -7,9 +7,7 @@ import (
 //var db *sql.DB
 
 func RegisterUser(user *models.User) (*models.User, error) {
-
-	return user, nil
-	/*stmt, err := db.Prepare("INSERT INTO users(name, email,password) VALUES(?,?,?)")
+	stmt, err := db.Prepare("INSERT INTO users(name, email,password) VALUES(?,?,?)")
 	if err != nil {
 		return nil, err
 	}
@@ -24,7 +22,7 @@ func RegisterUser(user *models.User) (*models.User, error) {
 	}
 	user.ID = int(userid)
 	return user, nil
-	*/
+
 }
 
 func DeleteUser(id int) (int64, error) {
