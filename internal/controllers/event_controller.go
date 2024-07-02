@@ -2,9 +2,10 @@ package controllers
 
 import (
 	"encoding/json"
-	"events/models"
-	"events/responses"
-	"events/service"
+	"events/internal/models"
+	"events/internal/service"
+	"events/pkg/responses"
+
 	"fmt"
 	"net/http"
 )

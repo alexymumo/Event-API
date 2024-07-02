@@ -1,8 +1,6 @@
 package repository
 
-import (
-	"events/models"
-)
+import "events/internal/models"
 
 //var db *sql.DB
 

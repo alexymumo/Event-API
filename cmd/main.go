@@ -1,8 +1,6 @@
 package main
 
-import (
-	"events/routes"
-)
+import "events/internal/routes"
 
 func main() {
 	routes.Routes()

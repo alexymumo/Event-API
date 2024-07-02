@@ -1,9 +1,9 @@
 package routes
 
 import (
-	"events/controllers"
-	"events/repository"
-	"events/service"
+	"events/internal/controllers"
+	"events/internal/repository"
+	"events/internal/service"
 	"fmt"
 	"net/http"
 

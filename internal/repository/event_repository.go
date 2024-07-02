@@ -2,8 +2,8 @@ package repository
 
 import (
 	"database/sql"
-	"events/config"
-	"events/models"
+	"events/internal/models"
+	"events/pkg/config"
 
 	_ "github.com/go-sql-driver/mysql"
 )
