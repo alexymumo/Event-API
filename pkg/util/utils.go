@@ -1,5 +1,17 @@
 package util
 
-type ServiceError struct {
-	Message string `json:"message"`
+import (
+	"golang.org/x/crypto/bcrypt"
+)
+
+func HashPassword(password string) (string, error) {
+	hashedpassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		return "", err
+	}
+	return string(hashedpassword), nil
+}
+
+func VerifyPassword(hashedpassword, password string) error {
+	return bcrypt.CompareHashAndPassword([]byte(hashedpassword), []byte(password))
 }
