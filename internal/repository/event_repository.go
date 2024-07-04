@@ -2,8 +2,8 @@ package repository
 
 import (
 	"database/sql"
-	"events/config"
-	"events/models"
+	"events/internal/models"
+	"events/pkg/database"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -11,8 +11,8 @@ import (
 var db *sql.DB
 
 func init() {
-	config.Connect()
-	db = config.GetDb()
+	database.Connect()
+	db = database.GetDb()
 }
 
 type EventRepository interface {
@@ -43,7 +43,7 @@ func (*repository) Delete(eventId int64) (int64, error) {
 /*return slice of events*/
 
 func (*repository) FindAllEvents() ([]models.Event, error) {
-	query, err := db.Query(`SELECT * FROM event`)
+	query, err := db.Query(`SELECT * FROM events`)
 	if err != nil {
 		return nil, err
 	}

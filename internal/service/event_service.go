@@ -2,8 +2,8 @@ package service
 
 import (
 	"errors"
-	"events/models"
-	"events/repository"
+	"events/internal/models"
+	"events/internal/repository"
 )
 
 var (
@@ -37,10 +37,6 @@ func (*service) Validate(event *models.Event) error {
 		return err
 	}
 	if event.Description == "" {
-		err := errors.New("cannot be empty")
-		return err
-	}
-	if event.Location == "" {
 		err := errors.New("cannot be empty")
 		return err
 	}

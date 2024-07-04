@@ -1,10 +1,15 @@
 package repository
 
 import (
-	"events/models"
+	"events/internal/models"
 )
 
 //var db *sql.DB
+
+type UserRepository interface {
+	Login()
+	SignUp()
+}
 
 func RegisterUser(user *models.User) (*models.User, error) {
 
@@ -27,26 +32,6 @@ func RegisterUser(user *models.User) (*models.User, error) {
 	*/
 }
 
-func DeleteUser(id int) (int64, error) {
-	return 0, nil
-
-	/*user, err := db.Exec("DELETE FROM users WHERE id=?", id)
-	if err != nil {
-		return 0, err
-	}
-	result, err := user.RowsAffected()
-	if err != nil {
-		return 0, err
-	}
-
-	return result, err
-	*/
-}
-
-func UpdateUser() {
-
-}
-
-func GetAllUsers() {
+func LoginUser() {
 
 }
