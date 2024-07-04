@@ -1,13 +1,13 @@
 package controllers
 
 import (
-	"encoding/json"
 	"events/internal/models"
 	"events/internal/service"
-	"events/pkg/responses"
 
 	"fmt"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
 var (
@@ -15,11 +15,11 @@ var (
 )
 
 type EventController interface {
-	Test(w http.ResponseWriter, r *http.Request)
-	GetAllEvents(w http.ResponseWriter, r *http.Request)
-	CreateEvent(w http.ResponseWriter, r *http.Request)
-	DeleteEvent(w http.ResponseWriter, r *http.Request)
-	UpdateEvent(w http.ResponseWriter, r *http.Request)
+	Test(c *gin.Context)
+	GetAllEvents(c *gin.Context)
+	CreateEvent(c *gin.Context)
+	DeleteEvent(c *gin.Context)
+	UpdateEvent(c *gin.Context)
 }
 
 type controller struct{}
@@ -29,8 +29,7 @@ func EventControllerImpl(service service.EventService) EventController {
 	return &controller{}
 }
 
-func (*controller) Test(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
+func (*controller) Test(c *gin.Context) {
 	fmt.Println("End Points Working")
 }
 
@@ -38,47 +37,42 @@ type Error struct {
 	Message string `json:"message"`
 }
 
-func (*controller) CreateEvent(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
+func (*controller) CreateEvent(c *gin.Context) {
 	var event models.Event
-	//var event *models.Event
-	err := json.NewDecoder(r.Body).Decode(&event)
-	if err != nil {
-		responses.ERROR(w, http.StatusUnprocessableEntity, err)
+	if err := c.ShouldBindJSON(&event); err != nil {
+		c.JSON(http.StatusUnprocessableEntity, gin.H{"error": err.Error()})
 		return
 	}
-	eventservice.Validate(&event)
+	if err := eventservice.Validate(&event); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 	result, err := eventservice.Save(&event)
 	if err != nil {
-		panic(err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
 	}
-	json, err := json.Marshal(result)
-	if err != nil {
-		panic(err.Error())
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(201)
-	fmt.Fprintf(w, "%s", json)
-	//responses.JSON(w, http.StatusCreated, result)
+	c.JSON(http.StatusCreated, result)
+}
+
+func (*controller) GetAllEvents(c *gin.Context) {
+	/*
+		w.Header().Set("Content-Type", "application/json")
+		events, err := eventservice.FindAllEvents()
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write([]byte(`Error:"Error occurred"`))
+		}
+		_ = json.NewEncoder(w).Encode(events)
+	*/
+}
+
+func (*controller) DeleteEvent(c *gin.Context) {
+	//w.Header().Set("Content-Type", "application/json")
 
 }
 
-func (*controller) GetAllEvents(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	events, err := eventservice.FindAllEvents()
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(`Error:"Error occurred"`))
-	}
-	_ = json.NewEncoder(w).Encode(events)
-}
-
-func (*controller) DeleteEvent(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-
-}
-
-func (*controller) UpdateEvent(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
+func (*controller) UpdateEvent(c *gin.Context) {
+	//w.Header().Set("Content-Type", "application/json")
 
 }

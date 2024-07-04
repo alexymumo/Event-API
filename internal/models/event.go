@@ -1,9 +1,7 @@
 package models
 
-import "time"
-
 type Event struct {
-	EventID     int       `json:"id"`
+	EventID     int       `json:"eventid"`
 	Title       string    `json:"title"`
 	Description string    `json:"description"`
 	Location    *Location `json:"location"`
@@ -12,11 +10,9 @@ type Event struct {
 	Creator     string    `json:"creator"`
 	Liked       bool      `json:"liked"`
 	ImageUrl    string    `json:"imageUrl"`
-	CreatedAt   time.Time `json:"createdAt"`
-	UpdatedAt   time.Time `json:"updatedAt"`
 }
 
 type Location struct {
-	Longitude int64 `json:"longitude"`
-	Latitude  int64 `json:"latitude"`
+	Longitude float64 `json:"longitude"`
+	Latitude  float64 `json:"latitude"`
 }

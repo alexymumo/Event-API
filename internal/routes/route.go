@@ -4,11 +4,8 @@ import (
 	"events/internal/controllers"
 	"events/internal/repository"
 	"events/internal/service"
-	"fmt"
-	"net/http"
 
-	"github.com/gorilla/mux"
-	"github.com/joho/godotenv"
+	"github.com/gin-gonic/gin"
 )
 
 var (
@@ -17,15 +14,14 @@ var (
 	controller    controllers.EventController = controllers.EventControllerImpl(eventservices)
 )
 
-var Routes = func() {
-	err := godotenv.Load()
-	if err != nil {
-		fmt.Println("failed to load env variables")
-	}
-	router := mux.NewRouter()
-	router.HandleFunc("/test", controller.Test)
-	router.HandleFunc("/event", controller.CreateEvent).Methods("POST")
-	router.HandleFunc("/events", controller.GetAllEvents).Methods("GET")
-	router.HandleFunc("/event/{eventid}", controllers.DeleteUserById).Methods("DELETE")
-	http.ListenAndServe(":8080", router)
+func UserRoutes(route *gin.Engine) {
+	route.POST("v1/auth/register")
+	route.POST("v1/auth/login")
+}
+
+func EventRoutes(route *gin.Engine) {
+	route.POST("v1/event")
+	route.GET("v1/events")
+	route.GET("v1/event:id")
+
 }
